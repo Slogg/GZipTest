@@ -75,7 +75,7 @@ namespace GZipTest.Domain.Compressor
                     while (inputStream.Position < inputStream.Length)
                     {
                         _gZipStrategy.Read(inputStream, _queueReader);
-                        ConsoleInfo.ProgressBar(inputStream.Position);
+                        ConsoleInfo.ShowPercent(inputStream.Position);
                     }
                     _queueReader.Stop();
                 }
