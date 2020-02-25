@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GZipTest.Helper;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace GZipTest.Domain
@@ -10,11 +11,15 @@ namespace GZipTest.Domain
     {
         private Queue<KeyValuePair<int, byte[]>> _queue;
         private int _chunkId;
+        private int _count;
+        private int _maxSize;
 
-        public ChunkQueue()
+        public ChunkQueue(int maxSize)
         {
             _queue = new Queue<KeyValuePair<int, byte[]>>();
             _chunkId = 0;
+            _count = 0;
+            _maxSize = maxSize;
         }
 
         /// <summary>
@@ -25,8 +30,13 @@ namespace GZipTest.Domain
         {
             lock (_queue)
             {
+                while (_count >= _maxSize)
+                {
+                    Monitor.Wait(_queue);
+                }
                 _queue.Enqueue(new KeyValuePair<int, byte[]>(_chunkId, data));
                 _chunkId++;
+                _count++;
                 Monitor.PulseAll(_queue);
             }
         }
@@ -40,12 +50,13 @@ namespace GZipTest.Domain
             int id = chunk.Key;
             lock (_queue)
             {
-                while(id != _chunkId)
+                while(_count >= _maxSize || id != _chunkId)
                 {
                     Monitor.Wait(_queue);
                 }
                 _queue.Enqueue(chunk);
                 _chunkId++;
+                _count++;
                 Monitor.PulseAll(_queue);
             }
         }
@@ -66,6 +77,8 @@ namespace GZipTest.Domain
                 {
                     return default;
                 }
+                _count--;
+                Monitor.PulseAll(_queue);
                 return _queue.Dequeue();
             }
         }
