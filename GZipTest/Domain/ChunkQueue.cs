@@ -59,10 +59,22 @@ namespace GZipTest.Domain
             lock (_queue)
             {
                 while (_queue.Count == 0)
+                {
                     Monitor.Wait(_queue);
+                }
                 if (_queue.Count == 0)
+                {
                     return default;
+                }
                 return _queue.Dequeue();
+            }
+        }
+
+        public void Stop()
+        {
+            lock (_queue)
+            {
+                Monitor.PulseAll(_queue);
             }
         }
 

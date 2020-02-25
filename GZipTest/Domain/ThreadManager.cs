@@ -31,6 +31,9 @@ namespace GZipTest.Domain
                 _manualEvent[i] = new ManualResetEvent(false);
                 _threads[i].Start(i);
             }
+
+            WaitHandle.WaitAll(_manualEvent);
+
         }
 
         /// <summary>
@@ -40,14 +43,6 @@ namespace GZipTest.Domain
         public ManualResetEvent[] GetEvents()
         {
             return _manualEvent;
-        }
-
-        /// <summary>
-        /// Дождаться окончания работы
-        /// </summary>
-        public void WaitAll()
-        {
-            WaitHandle.WaitAll(_manualEvent);
         }
     }
 }
