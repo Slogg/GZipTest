@@ -24,8 +24,8 @@ namespace GZipTest.Domain.Compressor
             _threadManager = new ThreadManager();
             _inputFile = inputFile;
             _outputFile = outputFile;
-            _queueReader = new ChunkQueue();
-            _queueWriter = new ChunkQueue();
+            _queueReader = new ChunkQueue(Config.Get().QueueMaxSize);
+            _queueWriter = new ChunkQueue(Config.Get().QueueMaxSize);
             _status = Status.failed;
         }
 

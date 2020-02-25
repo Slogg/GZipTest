@@ -1,4 +1,6 @@
 ﻿using GZipTest.Domain.Compressor;
+using GZipTest.Helper;
+using Microsoft.VisualBasic.Devices;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -9,19 +11,15 @@ namespace GZipTest
     {
         static int Main(string[] args)
         {
-#if DEBUG
-            args = new[] { "compress", "3333.7z", "3333.7z.gz" };
-            File.Delete("3333.7z.gz");
-#endif
 //#if DEBUG
-//            args = new[] { "decompress", "3333.7z.gz", "3333.7z" };
-//            File.Delete("3333.7z");
+//            args = new[] { "compress", "3333.7z", "3333.7z.gz" };
+//            File.Delete("3333.7z.gz");
 //#endif
+#if DEBUG
+            args = new[] { "decompress", "3333.7z.gz", "3333.7z" };
+            File.Delete("3333.7z");
+#endif
             IGZipStrategy gZip;
-
-
-            var sw = new Stopwatch();
-            sw.Start();
 
             try
             {
@@ -42,12 +40,12 @@ namespace GZipTest
                     ConsoleInfo.SizeFile = inputStream.Length;
                 }
 
+                Config.Get();
+
                 var context = new GZipContext(gZip, args[1], args[2]);
 
                 context.Run();
 
-                //Console.WriteLine(sw.ElapsedMilliseconds);
-                //Console.ReadKey();
                 return context.GetResult();
 
             }

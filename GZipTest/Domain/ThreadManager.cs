@@ -14,8 +14,8 @@ namespace GZipTest.Domain
 
         public ThreadManager()
         {
-            _manualEvent = new ManualResetEvent[Constant.ThreadsCount];
-            _threads = new Thread[Constant.ThreadsCount];
+            _manualEvent = new ManualResetEvent[Config.Get().ThreadsCount];
+            _threads = new Thread[Config.Get().ThreadsCount];
         }
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace GZipTest.Domain
         /// <param name="startAct">метод для запуска</param>
         public void Start(Action<object> startAct)
         {
-            for (int i = 0; i < Constant.ThreadsCount; i++)
+            for (int i = 0; i < Config.Get().ThreadsCount; i++)
             {
                 var start = new ParameterizedThreadStart(obj => startAct(obj));
                 _threads[i] = new Thread(start);

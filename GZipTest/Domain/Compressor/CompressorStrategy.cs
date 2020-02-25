@@ -35,7 +35,7 @@ namespace GZipTest.Domain.Compressor
         public void Read(FileStream fileStream, ChunkQueue queueReader)
         {
             var diff = fileStream.Length - fileStream.Position;
-            var bytesRead = diff <= Constant.ChunkSize ? (int)diff : Constant.ChunkSize;
+            var bytesRead = diff <= Config.ChunkSize ? (int)diff : Config.ChunkSize;
 
             var lastBuffer = new byte[bytesRead];
             fileStream.Read(lastBuffer, 0, bytesRead);
