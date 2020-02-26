@@ -22,14 +22,14 @@ namespace GZipTest.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    internal class Errors {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal Errors() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace GZipTest.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("GZipTest.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("GZipTest.Properties.Errors", typeof(Errors).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,56 +61,47 @@ namespace GZipTest.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can&apos;t access file: {0}.
+        ///   Looks up a localized string similar to The resulting file cannot be a source..
         /// </summary>
-        internal static string ErrCantAccessFile {
+        internal static string ErrFileNamesEqual {
             get {
-                return ResourceManager.GetString("ErrCantAccessFile", resourceCulture);
+                return ResourceManager.GetString("ErrFileNamesEqual", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File is missing: {0}.
+        ///   Looks up a localized string similar to The first parameter passed to the operation &quot;{0}&quot; or &quot;{1}&quot;.
         /// </summary>
-        internal static string ErrFileMissing {
+        internal static string ErrFirstArg {
             get {
-                return ResourceManager.GetString("ErrFileMissing", resourceCulture);
+                return ResourceManager.GetString("ErrFirstArg", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message: {0}, StackTrace: {1}.
+        ///   Looks up a localized string similar to Invalid command. Example: &quot;{0}/{1} inputfilename outpufilename&quot;.
         /// </summary>
-        internal static string ErrMsg {
+        internal static string ErrInvalidCommand {
             get {
-                return ResourceManager.GetString("ErrMsg", resourceCulture);
+                return ResourceManager.GetString("ErrInvalidCommand", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Operation {0} finished with {1}.
+        ///   Looks up a localized string similar to Invalid the name of the input file.
         /// </summary>
-        internal static string InfoEnd {
+        internal static string ErrInvalidInputFile {
             get {
-                return ResourceManager.GetString("InfoEnd", resourceCulture);
+                return ResourceManager.GetString("ErrInvalidInputFile", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start operation {0}.
+        ///   Looks up a localized string similar to Invalid the name of the output file.
         /// </summary>
-        internal static string InfoStart {
+        internal static string ErrInvalidOutputFile {
             get {
-                return ResourceManager.GetString("InfoStart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to TimeElapsed: {0} second.
-        /// </summary>
-        internal static string InfoTimeElapsed {
-            get {
-                return ResourceManager.GetString("InfoTimeElapsed", resourceCulture);
+                return ResourceManager.GetString("ErrInvalidOutputFile", resourceCulture);
             }
         }
     }

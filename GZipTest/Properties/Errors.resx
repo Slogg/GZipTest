@@ -117,22 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ErrCantAccessFile" xml:space="preserve">
-    <value>Can't access file: {0}</value>
+  <data name="ErrFileNamesEqual" xml:space="preserve">
+    <value>The resulting file cannot be a source.</value>
   </data>
-  <data name="ErrFileMissing" xml:space="preserve">
-    <value>File is missing: {0}</value>
+  <data name="ErrFirstArg" xml:space="preserve">
+    <value>The first parameter passed to the operation "{0}" or "{1}"</value>
   </data>
-  <data name="ErrMsg" xml:space="preserve">
-    <value>Message: {0}, StackTrace: {1}</value>
+  <data name="ErrInvalidCommand" xml:space="preserve">
+    <value>Invalid command. Example: "{0}/{1} inputfilename outpufilename"</value>
   </data>
-  <data name="InfoEnd" xml:space="preserve">
-    <value>Operation {0} finished with {1}</value>
+  <data name="ErrInvalidInputFile" xml:space="preserve">
+    <value>Invalid the name of the input file</value>
   </data>
-  <data name="InfoStart" xml:space="preserve">
-    <value>Start operation {0}</value>
-  </data>
-  <data name="InfoTimeElapsed" xml:space="preserve">
-    <value>TimeElapsed: {0} second</value>
+  <data name="ErrInvalidOutputFile" xml:space="preserve">
+    <value>Invalid the name of the output file</value>
   </data>
 </root>
