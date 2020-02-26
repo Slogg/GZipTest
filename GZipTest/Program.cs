@@ -9,18 +9,14 @@ namespace GZipTest
     {
         static int Main(string[] args)
         {
-//#if DEBUG
-//            args = new[] { "compress", "3333.avi", "3333.avi.gz" };
-//            File.Delete("3333.avi.gz");
-//#endif
-#if DEBUG
-            args = new[] { "decompress", "3333.avi.gz", "3333.avi" };
-            File.Delete("3333.avi");
-#endif
-            IGZipStrategy gZip;
+            args = new[] { "compress", "3333.avi", "3333.avi.gz" };
+            File.Delete("3333.avi.gz");
+            //args = new[] { "decompress", "3333.avi.gz", "3333.avi" };
+            //File.Delete("3333.avi");
 
             try
             {
+                IGZipStrategy gZip;
 
                 var validation = new ArgsValidation(args);
                 validation.Execute();
@@ -43,15 +39,19 @@ namespace GZipTest
                 {
                     ConsoleInfo.SizeFile = inputStream.Length;
                 }
-
                 var context = new GZipContext(gZip, args[1], args[2]);
-
                 context.Run();
-
                 return context.GetResult();
 
             }
-
+            catch (AggregateException ex)
+            {
+                foreach (var e in ex.Flatten().InnerExceptions)
+                {
+                    Console.WriteLine("Error: " + e.Message);
+                }
+                return 1;
+            }
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
