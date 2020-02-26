@@ -11,10 +11,8 @@ namespace GZipTest.Domain.Compressor
         private IGZipStrategy _gZipStrategy;
         private Status _status;
         private ThreadManager _threadManager;
-
         private ChunkQueue _queueReader;
         private ChunkQueue _queueWriter;
-
         private string _inputFile;
         private string _outputFile;
 
@@ -24,18 +22,16 @@ namespace GZipTest.Domain.Compressor
             _threadManager = new ThreadManager();
             _inputFile = inputFile;
             _outputFile = outputFile;
-            _queueReader = new ChunkQueue(Config.Get().QueueMaxSize);
-            _queueWriter = new ChunkQueue(Config.Get().QueueMaxSize);
+            _queueReader = new ChunkQueue(Config.QueueMaxSize);
+            _queueWriter = new ChunkQueue(Config.QueueMaxSize);
             _status = Status.failed;
         }
 
         public void Run()
         {
-            Thread reader = new Thread(Read);
-            reader.Start();
+            (new Thread(Read)).Start();
 
-            Thread writer = new Thread(Write);
-            writer.Start();
+            (new Thread(Write)).Start();
 
             _threadManager.Start(Handle);
             _queueReader.Stop();
@@ -66,11 +62,11 @@ namespace GZipTest.Domain.Compressor
             }
         }
 
-        public void Read()
+        private void Read()
         {
             try
             {
-                using (FileStream inputStream = new FileStream(_inputFile, FileMode.Open))
+                using (var inputStream = new FileStream(_inputFile, FileMode.Open))
                 {
                     while (inputStream.Position < inputStream.Length)
                     {
@@ -90,7 +86,7 @@ namespace GZipTest.Domain.Compressor
         {
             try
             {
-                using (FileStream outStream = new FileStream(_outputFile, FileMode.Append))
+                using (var outStream = new FileStream(_outputFile, FileMode.Append))
                 {
                     while (true)
                     {

@@ -1,43 +1,25 @@
-﻿using Microsoft.VisualBasic.Devices;
+﻿using GZipTest.Domain;
 using System;
 
 namespace GZipTest.Helper
 {
-    internal sealed class Config
+    internal static class Config
     {
-        private static Config _instance;
-        private const ulong availableBit32 = 2147483648;
+        // размер предполагаемо доступной оперативной памяти в 32 битной системе
+        public const ulong AvailableBit32 = 2147483648;
 
+        // верхняя граница размера очереди, на основе которой стоится максимальный размер
+        public const ushort QueueSizeUpperBound = 500;
+
+        // размер блока
         public const int ChunkSize = 1048576;
-        public readonly int ThreadsCount = Environment.ProcessorCount;
-        public int QueueMaxSize { get; private set; }
 
-        private Config()
-        {
-            CalcFields();
-        }
+        // количество потоков для компресса
+        public static readonly int ThreadsCount = Environment.ProcessorCount;
 
-        public static Config Get()
-        {
-            _instance ??= new Config();
-            return _instance;
-        }
+        // максимальный размер очереди
+        public static readonly int QueueMaxSize = (new QueueSizeIdentifier()).GetMaxSize();
 
-        // Расчитать поля для использования 
-        private void CalcFields()
-        {
-            var availablePhys = AvailablePhysical(); 
-            QueueMaxSize = 500 > availablePhys ? availablePhys : 500;
-        }
-
-        // Доступное кол-во памяти, которое можно выделить для данных
-        private int AvailablePhysical()
-        {
-            ulong availableMem = Environment.Is64BitProcess 
-                ? new ComputerInfo().AvailablePhysicalMemory 
-                : availableBit32;
-            return (int)(availableMem / 2 / ChunkSize);
-        }
-
+        public static Operation CurrOperation;
     }
 }
