@@ -3,6 +3,7 @@
     internal enum Status
     {
         copmleted = 0,
-        failed
+        failed, 
+        process
     }
 }

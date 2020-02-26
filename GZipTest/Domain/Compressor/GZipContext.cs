@@ -24,9 +24,12 @@ namespace GZipTest.Domain.Compressor
             _outputFile = outputFile;
             _queueReader = new ChunkQueue(Config.QueueMaxSize);
             _queueWriter = new ChunkQueue(Config.QueueMaxSize);
-            _status = Status.failed;
+            _status = Status.process;
         }
 
+        /// <summary>
+        /// Запустить процесс компрессии/декомпрессии
+        /// </summary>
         public void Run()
         {
             (new Thread(Read)).Start();
@@ -45,7 +48,7 @@ namespace GZipTest.Domain.Compressor
             try
             {
                 ManualResetEvent doneEvent = _threadManager.GetEvents()[(int)i];
-                while (true)
+                while (_status == Status.process)
                 {
                     var chunk = _queueReader.Dequeue();
 
@@ -59,7 +62,8 @@ namespace GZipTest.Domain.Compressor
             }
             catch (Exception ex)
             {
-                // throw
+                ConsoleInfo.ShowError($"Thread number: {i}. Message: {ex.Message}");
+                _status = Status.failed;
             }
         }
 
@@ -79,7 +83,8 @@ namespace GZipTest.Domain.Compressor
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                ConsoleInfo.ShowError(ex.Message);
+                _status = Status.failed;
             }
         }
 
@@ -89,7 +94,7 @@ namespace GZipTest.Domain.Compressor
             {
                 using (var outStream = new FileStream(_outputFile, FileMode.Append))
                 {
-                    while (true)
+                    while (_status == Status.process)
                     {
                         var chunk = _queueWriter.Dequeue();
                         if (chunk.Equals(default(KeyValuePair<int, byte[]>)))
@@ -101,10 +106,15 @@ namespace GZipTest.Domain.Compressor
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                ConsoleInfo.ShowError(ex.Message);
+                _status = Status.failed;
             }
         }
 
+        /// <summary>
+        /// Результат выполнения комрессии 
+        /// </summary>
+        /// <returns>1 - ошибка, 0 - успех</returns>
         public int GetResult()
         {
             if (_status == Status.copmleted)

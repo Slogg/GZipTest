@@ -24,5 +24,10 @@ namespace GZipTest
             Console.CursorLeft = 0;
             Console.Write("Successful " + Config.CurrOperation.ToString());
         }
+
+        public static void ShowError(string message)
+        {
+            Console.WriteLine($"Error: {message}");
+        }
     }
 }
