@@ -4,6 +4,9 @@ using System;
 
 namespace GZipTest.Domain
 {
+    /// <summary>
+    /// Вычисление размерности для очереди
+    /// </summary>
     internal sealed class QueueSizeIdentifier
     {
 

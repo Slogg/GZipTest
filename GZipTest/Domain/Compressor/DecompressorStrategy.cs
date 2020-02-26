@@ -6,13 +6,12 @@ using System.Linq;
 
 namespace GZipTest.Domain.Compressor
 {
+    /// <summary>
+    /// Decompressor
+    /// </summary>
     internal sealed class DecompressorStrategy : IGZipStrategy
     {
         private int counter;
-
-        public DecompressorStrategy()
-        {
-        }
 
         /// <summary>
         /// <see cref="IGZipStrategy.Handle"/>
@@ -38,14 +37,14 @@ namespace GZipTest.Domain.Compressor
         /// <summary>
         /// <see cref="IGZipStrategy.Read"/>
         /// </summary>
-        public void Read(FileStream fileStream, ChunkQueue queueReader) 
+        public void Read(FileStream inputStream, ChunkQueue queueReader) 
         {
             var bufLenght = new byte[8];
-            fileStream.Read(bufLenght, 0, bufLenght.Length);
+            inputStream.Read(bufLenght, 0, bufLenght.Length);
             var chunkLenght = BitConverter.ToInt32(bufLenght, 4);
             byte[] compresData = new byte[chunkLenght];
             bufLenght.CopyTo(compresData, 0);
-            fileStream.Read(compresData, 8, chunkLenght - 8);
+            inputStream.Read(compresData, 8, chunkLenght - 8);
 
             var chunk = new KeyValuePair<int, byte[]>(counter, compresData);
             queueReader.Enqueue(chunk);
@@ -55,9 +54,9 @@ namespace GZipTest.Domain.Compressor
         /// <summary>
         /// <see cref="IGZipStrategy.Write"/>
         /// </summary>
-        public void Write(KeyValuePair<int, byte[]> chunk, FileStream fileStream)
+        public void Write(KeyValuePair<int, byte[]> chunk, FileStream outStream)
         {
-            fileStream.Write(chunk.Value, 0, chunk.Value.Length);
+            outStream.Write(chunk.Value, 0, chunk.Value.Length);
         }
     }
 }

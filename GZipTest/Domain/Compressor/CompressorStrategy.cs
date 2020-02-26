@@ -6,6 +6,9 @@ using System.IO.Compression;
 
 namespace GZipTest.Domain.Compressor
 {
+    /// <summary>
+    /// Compressor
+    /// </summary>
     internal sealed class CompressorStrategy : IGZipStrategy
     {
         /// <summary>
@@ -32,23 +35,23 @@ namespace GZipTest.Domain.Compressor
         /// <summary>
         /// <see cref="IGZipStrategy.Read"/>
         /// </summary>
-        public void Read(FileStream fileStream, ChunkQueue queueReader)
+        public void Read(FileStream inputStream, ChunkQueue queueReader)
         {
-            var diff = fileStream.Length - fileStream.Position;
+            var diff = inputStream.Length - inputStream.Position;
             var bytesRead = diff <= Config.ChunkSize ? (int)diff : Config.ChunkSize;
 
             var lastBuffer = new byte[bytesRead];
-            fileStream.Read(lastBuffer, 0, bytesRead);
+            inputStream.Read(lastBuffer, 0, bytesRead);
             queueReader.Enqueue(lastBuffer);
         }
 
         /// <summary>
         /// <see cref="IGZipStrategy.Write"/>
         /// </summary>
-        public void Write(KeyValuePair<int, byte[]> chunk, FileStream fileStream)
+        public void Write(KeyValuePair<int, byte[]> chunk, FileStream outStream)
         {
             BitConverter.GetBytes(chunk.Value.Length).CopyTo(chunk.Value, 4);
-            fileStream.Write(chunk.Value, 0, chunk.Value.Length);
+            outStream.Write(chunk.Value, 0, chunk.Value.Length);
         }
     }
 }
