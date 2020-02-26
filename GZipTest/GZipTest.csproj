@@ -53,6 +53,7 @@
     <Compile Include="Domain\Compressor\DecompressorStrategy.cs" />
     <Compile Include="Domain\Compressor\GZipContext.cs" />
     <Compile Include="Domain\Compressor\IGZipStrategy.cs" />
+    <Compile Include="Domain\QueueSizeIdentifier.cs" />
     <Compile Include="Domain\ThreadManager.cs" />
     <Compile Include="Helper\Config.cs" />
     <Compile Include="Helper\Operation.cs" />
