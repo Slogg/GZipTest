@@ -37,6 +37,7 @@ namespace GZipTest.Domain.Compressor
             _queueReader.Stop();
 
             _status = Status.copmleted;
+            ConsoleInfo.Completed();
         }
 
         private void Handle(object i)
