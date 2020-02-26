@@ -1,8 +1,6 @@
 ﻿using GZipTest.Domain.Compressor;
 using GZipTest.Helper;
-using Microsoft.VisualBasic.Devices;
 using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace GZipTest
@@ -12,24 +10,30 @@ namespace GZipTest
         static int Main(string[] args)
         {
 //#if DEBUG
-//            args = new[] { "compress", "3333.7z", "3333.7z.gz" };
-//            File.Delete("3333.7z.gz");
+//            args = new[] { "compress", "3333.avi", "3333.avi.gz" };
+//            File.Delete("3333.avi.gz");
 //#endif
 #if DEBUG
-            args = new[] { "decompress", "3333.7z.gz", "3333.7z" };
-            File.Delete("3333.7z");
+            args = new[] { "decompress", "3333.avi.gz", "3333.avi" };
+            File.Delete("3333.avi");
 #endif
             IGZipStrategy gZip;
 
             try
             {
+
+                var validation = new ArgsValidation(args);
+                validation.Execute();
+
                 switch (args[0].ToLower())
                 {
                     case "compress":
                         gZip = new CompressorStrategy();
+                        Config.CurrOperation = Operation.compress;
                         break;
                     case "decompress":
                         gZip = new DecompressorStrategy();
+                        Config.CurrOperation = Operation.decompress;
                         break;
                     default:
                         throw new NotSupportedException();
@@ -39,8 +43,6 @@ namespace GZipTest
                 {
                     ConsoleInfo.SizeFile = inputStream.Length;
                 }
-
-                Config.Get();
 
                 var context = new GZipContext(gZip, args[1], args[2]);
 
@@ -52,7 +54,7 @@ namespace GZipTest
 
             catch (Exception ex)
             {
-                // ToDo: throws
+                Console.WriteLine("Error: " + ex.Message);
                 return 1;
             }
         }
