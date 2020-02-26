@@ -1,4 +1,5 @@
-﻿using GZipTest.Properties;
+﻿using GZipTest.Helper;
+using GZipTest.Properties;
 using System;
 
 namespace GZipTest
@@ -17,8 +18,17 @@ namespace GZipTest
 
         public void Execute()
         {
-            HandleCondition(IsMatchPattern, Resources.ErrCantAccessFile);
-
+            HandleCondition(() => _args.Length == 3, String.Format(
+                Errors.ErrInvalidCommand,
+                Operation.compress.ToString(),
+                Operation.decompress.ToString())); 
+            HandleCondition(IsValidFirstArg, String.Format(
+                Errors.ErrFirstArg, 
+                Operation.compress.ToString(), 
+                Operation.decompress.ToString()));
+            HandleCondition(() => _args[1].Length != 0, Errors.ErrInvalidInputFile);
+            HandleCondition(() => _args[1].Length != 0, Errors.ErrInvalidOutputFile);
+            HandleCondition(() => _args[1] != _args[2], Errors.ErrFileNamesEqual);
         }
 
         // Обработка условия. При false - выбросить исключение с заданным в аргументах сообщением
@@ -30,11 +40,11 @@ namespace GZipTest
             };
         }
 
-        #region Conditions
-        private bool IsMatchPattern()
+        private bool IsValidFirstArg()
         {
-            return _args.Length == 3;
+            return _args[0].ToLower() == Operation.compress.ToString().ToLower()
+                || _args[0].ToLower() == Operation.decompress.ToString().ToLower();
         }
-        #endregion
+
     }
 }
