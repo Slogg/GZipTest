@@ -82,7 +82,6 @@ namespace GZipTest.Domain.Compressor
                     while (inputStream.Position < inputStream.Length)
                     {
                         _gZipStrategy.Read(inputStream, _queueReader);
-                        throw new Exception("fdsff");
                         ConsoleInfo.ShowPercent(inputStream.Position);
                     }
                     _queueReader.Stop();
