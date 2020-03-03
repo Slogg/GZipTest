@@ -51,7 +51,10 @@ namespace GZipTest.Domain
         {
             for (int i = 0; i < _manualEvent.Length; i++)
             {
-                _manualEvent[i].Set();
+                if (_manualEvent[i] != null)
+                {
+                    _manualEvent[i].Set();
+                }
             }
         }
     }
