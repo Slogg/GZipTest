@@ -36,6 +36,10 @@ namespace GZipTest.Domain.Compressor
             (new Thread(Write)).Start();
 
             _threadManager.Start(Handle);
+            if (_status == Status.process)
+            {
+                _status = Status.copmleted;
+            }
             _queueReader.Stop();
         }
 
@@ -56,12 +60,16 @@ namespace GZipTest.Domain.Compressor
                     }
                     _gZipStrategy.Handle(chunk, _queueWriter);
                 }
+                doneEvent.Set();
+            }
+            catch(ObjectDisposedException)
+            {
+                HandleException($"Thread number: {i}. Message: Работа потока прервана из-за непредвиденной ошибки");
+
             }
             catch (Exception ex)
             {
-                _status = Status.failed;
-                doneEvent.Set();
-                ConsoleInfo.ShowError($"Thread number: {i}. Message: {ex.Message}");
+                HandleException($"Thread number: {i}. Message: {ex.Message}");
             }
         }
 
@@ -74,16 +82,15 @@ namespace GZipTest.Domain.Compressor
                     while (inputStream.Position < inputStream.Length)
                     {
                         _gZipStrategy.Read(inputStream, _queueReader);
+                        throw new Exception("fdsff");
+                        ConsoleInfo.ShowPercent(inputStream.Position);
                     }
                     _queueReader.Stop();
                 }
-                SetStatusCompleted();
             }
             catch (Exception ex)
             {
-                _status = Status.failed;
-                _threadManager.Abort();
-                ConsoleInfo.ShowError(ex.Message);
+                HandleException(ex.Message);
             }
         }
 
@@ -99,34 +106,26 @@ namespace GZipTest.Domain.Compressor
                         if (chunk.Equals(default(KeyValuePair<int, byte[]>)))
                             return;
                         _gZipStrategy.Write(chunk, outStream);
-                        ConsoleInfo.ShowPercent(outStream.Position);
                     }
                 }
-                SetStatusCompleted();
             }
             catch (Exception ex)
             {
-                _status = Status.failed;
-                _threadManager.Abort();
-                ConsoleInfo.ShowError(ex.Message);
+                HandleException(ex.Message);
             }
         }
 
-        /// <summary>
-        /// Установить статус выполненным
-        /// </summary>
-        private void SetStatusCompleted()
+        // Обработка исключений с прерыванием работы потоков
+        private void HandleException(string errorMsg)
         {
-            if (_status == Status.process)
-            {
-                _status = Status.copmleted;
-            }
+            _status = Status.failed;
+            _threadManager.Abort();
+            ConsoleInfo.ShowError(errorMsg);
         }
 
         /// <summary>
         /// Результат выполнения комрессии 
         /// </summary>
-        /// <returns>1 - ошибка, 0 - успех</returns>
         public Status GetResult()
         {
             return _status;
