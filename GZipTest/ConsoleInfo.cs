@@ -17,6 +17,11 @@ namespace GZipTest
 
             Console.CursorLeft = 0;
             Console.Write("Percent progress: " + percentage + "%");
+            if (percentage == 100)
+            {
+                Console.WriteLine();
+                Console.Write("Ending...");
+            }
         }
 
         /// <summary>
@@ -25,7 +30,7 @@ namespace GZipTest
         /// <param name="status">статус выполнения операции</param>
         public static void ShowResult(Status status)
         {
-            Console.WriteLine("Completed with code: " + (int)status);
+            Console.WriteLine("\nCompleted with code: " + (int)status);
         }
 
         /// <summary>
