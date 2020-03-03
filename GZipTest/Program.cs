@@ -2,17 +2,19 @@
 using GZipTest.Helper;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace GZipTest
 {
     class Program
     {
-        static int Main(string[] args)
+        static void Main(string[] args)
         {
-            args = new[] { "compress", "3333.avi", "3333.avi.gz" };
-            File.Delete("3333.avi.gz");
+            //args = new[] { "compress", @"3333.avi", @"3333.avi.gz" };
+            //File.Delete(@"3333.avi.gz");
             //args = new[] { "decompress", "3333.avi.gz", "3333.avi" };
             //File.Delete("3333.avi");
+            Status status = Status.failed;
 
             try
             {
@@ -41,21 +43,23 @@ namespace GZipTest
                 }
                 var context = new GZipContext(gZip, args[1], args[2]);
                 context.Run();
-                return context.GetResult();
-
+                status = context.GetResult();
             }
             catch (AggregateException ex)
             {
                 foreach (var e in ex.Flatten().InnerExceptions)
                 {
-                    Console.WriteLine("Error: " + e.Message);
+                    ConsoleInfo.ShowError(e.Message);
                 }
-                return 1;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
-                return 1;
+                ConsoleInfo.ShowError(ex.Message);
+            }
+            finally
+            {
+                ConsoleInfo.ShowResult(status);
+                Environment.Exit((int)status);
             }
         }
     }

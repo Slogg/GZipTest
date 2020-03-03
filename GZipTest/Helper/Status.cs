@@ -1,9 +1,9 @@
 ﻿namespace GZipTest.Helper
 {
-    internal enum Status
+    public enum Status
     {
         copmleted = 0,
-        failed, 
-        process
+        failed = 1, 
+        process = 2
     }
 }
