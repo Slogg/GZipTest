@@ -43,5 +43,16 @@ namespace GZipTest.Domain
         {
             return _manualEvent;
         }
+
+        /// <summary>
+        /// Прервать выполнение процесса
+        /// </summary>
+        public void Abort()
+        {
+            for (int i = 0; i < _manualEvent.Length; i++)
+            {
+                _manualEvent[i].Set();
+            }
+        }
     }
 }

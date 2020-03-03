@@ -24,7 +24,6 @@ namespace GZipTest.Domain.Compressor
             _outputFile = outputFile;
             _queueReader = new ChunkQueue(Config.QueueMaxSize);
             _queueWriter = new ChunkQueue(Config.QueueMaxSize);
-            _status = Status.process;
         }
 
         /// <summary>
@@ -32,22 +31,20 @@ namespace GZipTest.Domain.Compressor
         /// </summary>
         public void Run()
         {
+            _status = Status.process;
             (new Thread(Read)).Start();
-
             (new Thread(Write)).Start();
 
             _threadManager.Start(Handle);
             _queueReader.Stop();
-
-            _status = Status.copmleted;
-            ConsoleInfo.Completed();
         }
 
         private void Handle(object i)
         {
+            ManualResetEvent doneEvent = null;
             try
             {
-                ManualResetEvent doneEvent = _threadManager.GetEvents()[(int)i];
+                doneEvent = _threadManager.GetEvents()[(int)i];
                 while (_status == Status.process)
                 {
                     var chunk = _queueReader.Dequeue();
@@ -62,8 +59,9 @@ namespace GZipTest.Domain.Compressor
             }
             catch (Exception ex)
             {
-                ConsoleInfo.ShowError($"Thread number: {i}. Message: {ex.Message}");
                 _status = Status.failed;
+                doneEvent.Set();
+                ConsoleInfo.ShowError($"Thread number: {i}. Message: {ex.Message}");
             }
         }
 
@@ -76,15 +74,16 @@ namespace GZipTest.Domain.Compressor
                     while (inputStream.Position < inputStream.Length)
                     {
                         _gZipStrategy.Read(inputStream, _queueReader);
-                        ConsoleInfo.ShowPercent(inputStream.Position);
                     }
                     _queueReader.Stop();
                 }
+                SetStatusCompleted();
             }
             catch (Exception ex)
             {
-                ConsoleInfo.ShowError(ex.Message);
                 _status = Status.failed;
+                _threadManager.Abort();
+                ConsoleInfo.ShowError(ex.Message);
             }
         }
 
@@ -100,14 +99,27 @@ namespace GZipTest.Domain.Compressor
                         if (chunk.Equals(default(KeyValuePair<int, byte[]>)))
                             return;
                         _gZipStrategy.Write(chunk, outStream);
+                        ConsoleInfo.ShowPercent(outStream.Position);
                     }
                 }
-
+                SetStatusCompleted();
             }
             catch (Exception ex)
             {
-                ConsoleInfo.ShowError(ex.Message);
                 _status = Status.failed;
+                _threadManager.Abort();
+                ConsoleInfo.ShowError(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Установить статус выполненным
+        /// </summary>
+        private void SetStatusCompleted()
+        {
+            if (_status == Status.process)
+            {
+                _status = Status.copmleted;
             }
         }
 
@@ -115,11 +127,9 @@ namespace GZipTest.Domain.Compressor
         /// Результат выполнения комрессии 
         /// </summary>
         /// <returns>1 - ошибка, 0 - успех</returns>
-        public int GetResult()
+        public Status GetResult()
         {
-            if (_status == Status.copmleted)
-                return 0;
-            return 1;
+            return _status;
         }
     }
 }
